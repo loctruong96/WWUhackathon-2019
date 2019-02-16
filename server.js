@@ -1,13 +1,9 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const escapeStringRegexp = require('escape-string-regexp');
 const bodyParser = require('body-parser');
-const MongoStore = require('connect-mongo')(session);
 const schemas = require('./utilities/schemas');
 const config = require('./config.json');
-const example = require('./example.json');
 const query = require('./utilities/query-utilities');
 
 mongoose.connect(config.databaseURL, config.mongooseConfig).catch((err) => {
@@ -89,9 +85,13 @@ app.get('/search', async (req, res, next) => {
         }
     } else if (req.query.cardName) {
         try {
-            let temp = await query.queryCardByCardName(schemas.Cards, req.query.cardName);
-            res.jsonp(temp);
-
+            if (req.query.oneOnly) {
+                let temp = await query.queryCardByCardNameOne(schemas.Cards, req.query.cardName);
+                res.jsonp(temp);
+            } else {
+                let temp = await query.queryCardByCardName(schemas.Cards, req.query.cardName);
+                res.jsonp(temp);
+            }
         } catch (err) {
             next(err);
         }
@@ -136,13 +136,6 @@ app.post('/submit/', (req, res, next) => {
             story: "this guy bought me a coffee",
         }]
     };
-    // query.queryCardByCardName(schemas.Cards, "helloworld-2").then((data) => {
-    //     console.log(data);
-    // }).catch();
-
-    query.queryHighestMadeMyDay(schemas.Cards).then((data) => {
-        console.log(data);
-    }).catch();
 
     // schemas.Cards.create(example2).then(() =>{
     //     console.log("inserted okay");

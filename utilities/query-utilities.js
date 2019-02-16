@@ -6,6 +6,14 @@ exports.queryCardByCardName = (cardModel, cardName) => {
     return cardModel.find(query).lean().exec();
 };
 
+exports.queryCardByCardNameOne = (cardModel, cardName) => {
+    // support partial matching and ignore cases
+    const query = {
+        name: { $regex: cardName, $options: 'i' }
+    };
+    return cardModel.findOne(query).lean().exec();
+};
+
 exports.queryHighestMadeMyDay = (cardModel) => {
     return cardModel.find().sort({num_made_my_day:-1}).limit(1).exec()
 };
