@@ -19,7 +19,7 @@ const Cards = () => (
             story: String,
         }]
     }, {
-        collection: 'booking',
+        collection: 'cards',
     })
 );
 

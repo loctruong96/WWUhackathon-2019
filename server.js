@@ -5,8 +5,10 @@ const session = require('express-session');
 const escapeStringRegexp = require('escape-string-regexp');
 const bodyParser = require('body-parser');
 const MongoStore = require('connect-mongo')(session);
+const schemas = require('./utilities/schemas');
 const config = require('./config.json');
 const example = require('./example.json');
+const query = require('./utilities/query-utilities');
 
 mongoose.connect(config.databaseURL, config.mongooseConfig).catch((err) => {
     gracefulShutdown(err);
@@ -101,6 +103,36 @@ app.post('/submit/', (req, res, next) => {
         const err = new Error('sentiment failed');
         err.statusCode = 400;
     }
+
+    const example2 = {
+        name: "helloworld-2",
+        number_of_pass: 2,
+        birthplace: "WA",
+        num_made_my_day: 1,
+        num_changed_my_life: 0,
+        num_restored_my_faith_in_humanity: 0,
+        num_meh: 0,
+        num_what_a_kind_jesture: 0,
+        num_made_me_feel_loved: 0,
+        last_known_location: "ip-address",
+        history : [{
+            location : "ip-address",
+            sentiment : 5,
+            datetime: new Date(),
+            story: "this guy bought me a coffee",
+        }]
+    };
+    // query.queryCardByCardName(schemas.Cards, "helloworld-2").then((data) => {
+    //     console.log(data);
+    // }).catch();
+    query.queryHighestMadeMyDay(schemas.Cards).then((data) => {
+        console.log(data);
+    }).catch();
+    // schemas.Cards.create(example2).then(() =>{
+    //     console.log("inserted okay");
+    // }).catch((err) => {
+    //     console.log('failed');
+    // });
     res.send('OK');
 });
 
