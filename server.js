@@ -1,10 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const escapeStringRegexp = require('escape-string-regexp');
 const bodyParser = require('body-parser');
-const MongoStore = require('connect-mongo')(session);
 const config = require('./config.json');
 const example = require('./example.json');
 
@@ -64,7 +60,24 @@ app.get('/search', (req, res, next) => {
 });
 
 
-app.post('submit', (req, res, next) => {
+app.post('/submit/', (req, res, next) => {
+    const err = new Error('body cannot be empty request');
+    err.statusCode = 400;
+    if (!req.body) {
+        return next(err);
+    }
+    if (!req.body.name) {
+        const err = new Error('require name');
+        err.statusCode = 400;
+    }
+    if (!req.body.history) {
+        const err = new Error('require history object');
+        err.statusCode = 400;
+    }
+    if (req.body.name === 'fail_sentiment') {
+        const err = new Error('sentiment failed');
+        err.statusCode = 400;
+    }
     res.send('OK');
 });
 
