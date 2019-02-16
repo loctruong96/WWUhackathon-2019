@@ -1,0 +1,32 @@
+{
+  "name" : "helloWorld",
+  "number_of_pass": 2,
+  "birthplace" : "WA",
+  "num_made_my_day" : 1,
+  "num_changed_my_life" : 0,
+  "num_restored_my_faith_in_humanity" : 0,
+  "num_meh" : 1,
+  "num_what_a_kind_jesture" : 0,
+  "num_made_me_feel_loved" : 1,
+  "last_known_location": "ip-address",
+  "history" : [
+    {
+      "location" : "ip-address",
+      "sentiment" : 5,
+      "datetime": "date object",
+      "story": "this guy bought me a coffee"
+    },
+    {
+      "location" : "ip-address",
+      "sentiment" :2,
+      "datetime": "date object",
+      "story": "someone gifted me some flower."
+    },
+    {
+      "location" : "ip-address",
+      "sentiment" :0,
+      "datetime": "date object",
+      "story": "someone sent me a selfie of themselves."
+    }
+  ]
+}

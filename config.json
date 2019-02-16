@@ -1,5 +1,5 @@
 {
-  "databaseURL": "mongodb://domain:port/databaseName",
+  "databaseURL": "mongodb+srv://pifadmin:pifadmin2019@pifcluster-xh3dx.mongodb.net/test?retryWrites=true",
   "port": 8080,
   "mongooseConfig": {
     "autoIndex": false,
