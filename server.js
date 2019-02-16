@@ -54,7 +54,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/search', (req, res, next) => {
+app.get('/search', async (req, res, next) => {
     if (isEmpty(req.query)) {
         const err = new Error('require stat or cardName');
         err.statusCode = 400;
@@ -67,20 +67,34 @@ app.get('/search', (req, res, next) => {
     }
 
     if (req.query.stat) {
-        // send back top 4 result of each category
         const result = [];
-        result.push(example);
-        result.push(example);
-        result.push(example);
-        result.push(example);
-        res.jsonp(result);
+        try {
+            let temp = await query.queryHighestMadeMyDay(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestChangeMyLife(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestFaithInHuman(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestMeh(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestNice(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestLoved(schemas.Cards);
+            result.push(temp[0]);
+            temp = await query.queryHighestHistory(schemas.Cards);
+            result.push(temp[0]);
+            res.jsonp(result);
+        } catch (err) {
+            next(err);
+        }
     } else if (req.query.cardName) {
-        // send back list of top results
-        const result = [];
-        result.push(example);
-        result.push(example);
-        res.jsonp(result);
+        try {
+            let temp = await query.queryCardByCardName(schemas.Cards, req.query.cardName);
+            res.jsonp(temp);
 
+        } catch (err) {
+            next(err);
+        }
     }
 });
 
@@ -125,9 +139,11 @@ app.post('/submit/', (req, res, next) => {
     // query.queryCardByCardName(schemas.Cards, "helloworld-2").then((data) => {
     //     console.log(data);
     // }).catch();
+
     query.queryHighestMadeMyDay(schemas.Cards).then((data) => {
         console.log(data);
     }).catch();
+
     // schemas.Cards.create(example2).then(() =>{
     //     console.log("inserted okay");
     // }).catch((err) => {
