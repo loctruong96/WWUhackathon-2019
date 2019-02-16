@@ -1,0 +1,17 @@
+{
+  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": ["off"],
+    "no-underscore-dangle": "off",
+    "no-use-before-define": "off",
+    "consistent-return": "off",
+    "no-param-reassign": "off",
+    "array-callback-return": "off",
+    "prefer-destructuring": "off",
+    "no-unused-expressions": "off"
+  }
+}

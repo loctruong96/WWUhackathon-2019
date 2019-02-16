@@ -1,0 +1,11 @@
+{
+  "databaseURL": "mongodb://domain:port/databaseName",
+  "port": 8080,
+  "mongooseConfig": {
+    "autoIndex": false,
+    "useNewUrlParser": true,
+    "auto_reconnect" :true,
+    "reconnectTries": 10
+  },
+  "sessionSecret": "secretText"
+}
