@@ -29,7 +29,6 @@ app.use((req, res, next) => {
 });
 
 app.get('/search', (req, res, next) => {
-    console.log(example);
     if (isEmpty(req.query)) {
         const err = new Error('require stat or cardName');
         err.statusCode = 400;
