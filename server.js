@@ -154,7 +154,7 @@ app.post('/submit/', async (req, res, next) => {
     	.then(function (data) {
         	console.log('reply', data);
             if (!data){
-                return res.send(309, "extreme negativity detected");
+                return res.send(209, "extreme negativity detected");
             } else {
                 let rate = history.sentiment;
                 temp.number_of_pass += 1;
