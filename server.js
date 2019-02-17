@@ -49,6 +49,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Request headers you wish to allow
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true); // Pass to next layer of middleware
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     next();
 });
 
