@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const request = require('request');
+const request = require('request-promise');
 const schemas = require('./utilities/schemas');
 const config = require('./config.json');
 const query = require('./utilities/query-utilities');
@@ -140,6 +140,23 @@ app.post('/submit/', async (req, res, next) => {
             return res.send(403, "card not found");
         }
         // TODO sentiment analysis
+        let tempURL = `http://127.0.0.1:5000/user/${history.story}`;
+        let encoded = encodeURI(tempURL)
+        let options = {
+    	uri: encoded,
+    	headers: {
+        	'User-Agent': 'Request-Promise'
+    	},
+    		json: true // Automatically parses the JSON string in the response
+	};
+        request(options)
+    	.then(function (data) {
+        	console.log('reply', data);
+    	})
+    	.catch(function (err) {
+               console.log(err);
+        // API call failed...
+    });
         let rate = history.sentiment;
         temp.number_of_pass += 1;
         if ((rate & 0x1) === 0x1) {
