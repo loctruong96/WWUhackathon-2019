@@ -153,7 +153,7 @@ app.post('/submit/', async (req, res, next) => {
         request(options)
     	.then(function (data) {
         	console.log('reply', data);
-            if (data === 'False'){
+            if (data === 'false'){
                 return res.send(400, "extreme negativity detected");
             }
     	})
