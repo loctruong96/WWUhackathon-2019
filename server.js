@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const request = require('request');
 const schemas = require('./utilities/schemas');
 const config = require('./config.json');
 const query = require('./utilities/query-utilities');
@@ -28,7 +29,7 @@ mongoose.connection.on('disconnected', () => {
 });
 
 function isEmpty(obj) {
-    for(var key in obj) {
+    for(let key in obj) {
         if(obj.hasOwnProperty(key))
             return false;
     }
@@ -130,6 +131,10 @@ app.post('/submit/', async (req, res, next) => {
     // find the object
     try {
         let temp = await query.queryCardByCardNameOne(schemas.Cards, req.body.name);
+        if (!temp){
+            return res.send(403, "card not found");
+        }
+        // TODO sentiment analysis
         let rate = history.sentiment;
         temp.number_of_pass += 1;
         if ((rate & 0x1) === 0x1) {
