@@ -150,7 +150,7 @@ app.post('/submit/', async (req, res, next) => {
                 json: true // Automatically parses the JSON string in the response
 	        };
 
-        request(options)
+        await request(options)
     	.then(function (data) {
         	console.log('reply', data);
             if (!data){
