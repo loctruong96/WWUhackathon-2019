@@ -90,9 +90,11 @@ app.get('/search', async (req, res, next) => {
         }
     } else if (req.query.cardName) {
         try {
+            const result = [];
             if (req.query.oneOnly) {
                 let temp = await query.queryCardByCardNameOne(schemas.Cards, req.query.cardName);
-                res.jsonp(temp);
+                result.push(temp);
+                res.jsonp(result);
             } else {
                 let temp = await query.queryCardByCardName(schemas.Cards, req.query.cardName);
                 res.jsonp(temp);
