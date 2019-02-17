@@ -170,10 +170,10 @@ app.post('/submit/', async (req, res, next) => {
                 if ((rate & 0x8) === 0x8) {
                     temp["num_restored_my_faith_in_humanity"] += 1;
                 }
-                if ((rate & 0x8) === 0x8) {
+                if ((rate & 0x10) === 0x10) {
                     temp["num_changed_my_life"] += 1;
                 }
-                if ((rate & 0x10) === 0x10) {
+                if ((rate & 0x20) === 0x20) {
                     temp["num_made_my_day"] += 1;
                 }
                 if (history.location) {
