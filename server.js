@@ -153,40 +153,41 @@ app.post('/submit/', async (req, res, next) => {
         request(options)
     	.then(function (data) {
         	console.log('reply', data);
-            if (data === 'false'){
+            if (!data){
                 return res.send(400, "extreme negativity detected");
+            } else {
+                let rate = history.sentiment;
+                temp.number_of_pass += 1;
+                if ((rate & 0x1) === 0x1) {
+                    temp["num_meh"] += 1;
+                }
+                if ((rate & 0x2) === 0x2) {
+                    temp["num_what_a_kind_jesture"] += 1;
+                }
+                if ((rate & 0x4) === 0x4) {
+                    temp["num_made_me_feel_loved"] += 1;
+                }
+                if ((rate & 0x8) === 0x8) {
+                    temp["num_restored_my_faith_in_humanity"] += 1;
+                }
+                if ((rate & 0x8) === 0x8) {
+                    temp["num_changed_my_life"] += 1;
+                }
+                if ((rate & 0x10) === 0x10) {
+                    temp["num_made_my_day"] += 1;
+                }
+                if (history.location) {
+                    temp.last_known_location = history.location;
+                }
+                temp.history.push(history);
+                schemas.Cards.findOneAndUpdate({name: temp.name},temp , {upsert:true}, function(err, doc){
+                    if (err) return res.send(500, { error: err });
+                    return res.send("succesfully saved");
+                });
             }
     	})
     	.catch(function (err) {
     	    console.log(err);
-        });
-        let rate = history.sentiment;
-        temp.number_of_pass += 1;
-        if ((rate & 0x1) === 0x1) {
-            temp["num_meh"] += 1;
-        }
-        if ((rate & 0x2) === 0x2) {
-            temp["num_what_a_kind_jesture"] += 1;
-        }
-        if ((rate & 0x4) === 0x4) {
-            temp["num_made_me_feel_loved"] += 1;
-        }
-        if ((rate & 0x8) === 0x8) {
-            temp["num_restored_my_faith_in_humanity"] += 1;
-        }
-        if ((rate & 0x8) === 0x8) {
-            temp["num_changed_my_life"] += 1;
-        }
-        if ((rate & 0x10) === 0x10) {
-            temp["num_made_my_day"] += 1;
-        }
-        if (history.location) {
-            temp.last_known_location = history.location;
-        }
-        temp.history.push(history);
-        schemas.Cards.findOneAndUpdate({name: temp.name},temp , {upsert:true}, function(err, doc){
-            if (err) return res.send(500, { error: err });
-            return res.send("succesfully saved");
         });
     } catch (err) {
         next(err);
