@@ -9,7 +9,7 @@ exports.queryCardByCardName = (cardModel, cardName) => {
 exports.queryCardByCardNameOne = (cardModel, cardName) => {
     // support partial matching and ignore cases
     const query = {
-        name: { $regex: cardName, $options: 'i' }
+        name: cardName
     };
     return cardModel.findOne(query).lean().exec();
 };

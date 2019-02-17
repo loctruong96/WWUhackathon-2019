@@ -36,9 +36,10 @@ function isEmpty(obj) {
 }
 
 const app = express();
-
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 
 app.use((req, res, next) => {
@@ -99,7 +100,7 @@ app.get('/search', async (req, res, next) => {
 });
 
 
-app.post('/submit/', (req, res, next) => {
+app.post('/submit/', async (req, res, next) => {
     const err = new Error('body cannot be empty request');
     err.statusCode = 400;
     if (!req.body) {
@@ -108,41 +109,58 @@ app.post('/submit/', (req, res, next) => {
     if (!req.body.name) {
         const err = new Error('require name');
         err.statusCode = 400;
+        return next(err);
     }
     if (!req.body.history) {
         const err = new Error('require history object');
         err.statusCode = 400;
+        return next(err);
     }
     if (req.body.name === 'fail_sentiment') {
         const err = new Error('sentiment failed');
         err.statusCode = 400;
+        return next(err);
     }
-
-    const example2 = {
-        name: "helloworld-2",
-        number_of_pass: 2,
-        birthplace: "WA",
-        num_made_my_day: 1,
-        num_changed_my_life: 0,
-        num_restored_my_faith_in_humanity: 0,
-        num_meh: 0,
-        num_what_a_kind_jesture: 0,
-        num_made_me_feel_loved: 0,
-        last_known_location: "ip-address",
-        history : [{
-            location : "ip-address",
-            sentiment : 5,
-            datetime: new Date(),
-            story: "this guy bought me a coffee",
-        }]
-    };
-
-    // schemas.Cards.create(example2).then(() =>{
-    //     console.log("inserted okay");
-    // }).catch((err) => {
-    //     console.log('failed');
-    // });
-    res.send('OK');
+    let history;
+    try {
+        history = JSON.parse(req.body.history);
+    } catch (err) {
+        return next(err);
+    }
+    // find the object
+    try {
+        let temp = await query.queryCardByCardNameOne(schemas.Cards, req.body.name);
+        let rate = history.sentiment;
+        temp.number_of_pass += 1;
+        if ((rate & 0x1) === 0x1) {
+            temp["num_meh"] += 1;
+        }
+        if ((rate & 0x2) === 0x2) {
+            temp["num_what_a_kind_jesture"] += 1;
+        }
+        if ((rate & 0x4) === 0x4) {
+            temp["num_made_me_feel_loved"] += 1;
+        }
+        if ((rate & 0x8) === 0x8) {
+            temp["num_restored_my_faith_in_humanity"] += 1;
+        }
+        if ((rate & 0x8) === 0x8) {
+            temp["num_changed_my_life"] += 1;
+        }
+        if ((rate & 0x10) === 0x10) {
+            temp["num_made_my_day"] += 1;
+        }
+        if (history.location) {
+            temp.last_known_location = history.location;
+        }
+        temp.history.push(history);
+        schemas.Cards.findOneAndUpdate({name: temp.name},temp , {upsert:true}, function(err, doc){
+            if (err) return res.send(500, { error: err });
+            return res.send("succesfully saved");
+        });
+    } catch (err) {
+        next(err);
+    }
 });
 
 app.use((err, req, res, next) => {
