@@ -149,17 +149,21 @@ app.post('/submit/', async (req, res, next) => {
     	    },
                 json: true // Automatically parses the JSON string in the response
 	        };
-
+        let fail = false;
         await request(options)
     	.then(function (data) {
         	console.log('reply', data);
             if (!data){
+                fail = true;
                 return res.send(209, "extreme negativity detected");
             }
     	})
     	.catch(function (err) {
     	    console.log(err);
         });
+        if(fail){
+            return;
+        }
         let rate = history.sentiment;
         temp.number_of_pass += 1;
         if ((rate & 0x1) === 0x1) {
