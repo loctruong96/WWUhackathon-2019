@@ -139,24 +139,27 @@ app.post('/submit/', async (req, res, next) => {
         if (!temp){
             return res.send(403, "card not found");
         }
-        // TODO sentiment analysis
+
         let tempURL = `http://127.0.0.1:5000/user/${history.story}`;
-        let encoded = encodeURI(tempURL)
+        let encoded = encodeURI(tempURL);
         let options = {
-    	uri: encoded,
-    	headers: {
-        	'User-Agent': 'Request-Promise'
-    	},
-    		json: true // Automatically parses the JSON string in the response
-	};
+    	    uri: encoded,
+    	    headers: {
+    	        'User-Agent': 'Request-Promise'
+    	    },
+                json: true // Automatically parses the JSON string in the response
+	        };
+
         request(options)
     	.then(function (data) {
         	console.log('reply', data);
+            if (data === 'false'){
+                return res.send(400, "extreme negativity detected");
+            }
     	})
     	.catch(function (err) {
-               console.log(err);
-        // API call failed...
-    });
+    	    console.log(err);
+        });
         let rate = history.sentiment;
         temp.number_of_pass += 1;
         if ((rate & 0x1) === 0x1) {
